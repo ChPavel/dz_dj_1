@@ -3,6 +3,8 @@ import csv
 
 ADS = 'ads'
 CATEGORIES = 'categories'
+LOCATIONS = 'locations'
+USERS = 'users'
 
 
 def convjson(csv_file, json_file, model):
@@ -14,6 +16,10 @@ def convjson(csv_file, json_file, model):
                 del row['id']
             else:
                 del row['Id']
+
+            if 'location_id' in row:
+                row['location'] = [int(row['location_id'])]
+                del row['location_id']
 
             if 'is_published' in row:
                 if row['is_published'] == 'TRUE':
@@ -33,3 +39,5 @@ def convjson(csv_file, json_file, model):
 
 convjson(f"{ADS}.csv", f"{ADS}.json", 'ads.ad')
 convjson(f"{CATEGORIES}.csv", f"{CATEGORIES}.json", 'ads.category')
+convjson(f"{LOCATIONS}.csv", f"{LOCATIONS}.json", 'users.location')
+convjson(f"{USERS}.csv", f"{USERS}.json", 'users.user') # users.user т.е. название апа.название файла
