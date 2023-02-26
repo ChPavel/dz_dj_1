@@ -1,3 +1,4 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
@@ -14,25 +15,21 @@ class Location(models.Model):
         return self.name
 
 
-# class UserRole: # вариант с разбора
-#     MEMBER = "member"
-#     MODERATOR = "moderator"
-#     ADMIN = "admin"
-#     choices = ((MEMBER, 'Пользователь'), (MODERATOR, 'Модератор'), (ADMIN, 'Администратор'))
+class UserRole: # вариант с разбора
+    MEMBER = "member"
+    MODERATOR = "moderator"
+    ADMIN = "admin"
+    choices = ((MEMBER, 'Пользователь'), (MODERATOR, 'Модератор'), (ADMIN, 'Администратор'))
 
 
-class User(models.Model):
-    ROLES = [
-        ("admin", "Администратор"),
-        ("moderator", "Модератор"),
-        ("member", "Пользователь"),
-    ]
-    first_name = models.CharField(verbose_name='Имя', max_length=100, null=True)
-    last_name = models.CharField(verbose_name='Фамилия', max_length=100, null=True)
-    username = models.CharField(verbose_name='Логин', max_length=100, unique=True)
-    password = models.CharField(verbose_name='Пароль', max_length=100)
-    role = models.CharField(max_length=10, choices=ROLES, default="member")
-    # role = models.CharField(choices=UserRole.choices, default=UserRole.MEMBER, max_length=10) # вариант с разбора
+class User(AbstractUser):
+    # ROLES = [
+    #     ("admin", "Администратор"),
+    #     ("moderator", "Модератор"),
+    #     ("member", "Пользователь"),
+    # ]
+    role = models.CharField(choices=UserRole.choices, default=UserRole.MEMBER, max_length=10)
+    # role = models.CharField(max_length=10, choices=ROLES, default="member")
     age = models.PositiveSmallIntegerField()
     location = models.ManyToManyField(Location)
 
@@ -42,3 +39,26 @@ class User(models.Model):
 
     def __str__(self):
         return self.username
+
+
+# class User(models.Model):
+#     ROLES = [
+#         ("admin", "Администратор"),
+#         ("moderator", "Модератор"),
+#         ("member", "Пользователь"),
+#     ]
+#     first_name = models.CharField(verbose_name='Имя', max_length=100, null=True)
+#     last_name = models.CharField(verbose_name='Фамилия', max_length=100, null=True)
+#     username = models.CharField(verbose_name='Логин', max_length=100, unique=True)
+#     password = models.CharField(verbose_name='Пароль', max_length=100)
+#     role = models.CharField(max_length=10, choices=ROLES, default="member")
+#     # role = models.CharField(choices=UserRole.choices, default=UserRole.MEMBER, max_length=10) # вариант с разбора
+#     age = models.PositiveSmallIntegerField()
+#     location = models.ManyToManyField(Location)
+#
+#     class Meta:
+#         verbose_name = "Пользователь"
+#         verbose_name_plural = "Пользователи"
+#
+#     def __str__(self):
+#         return self.username

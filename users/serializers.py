@@ -33,6 +33,8 @@ class UserCreateSerializer(serializers.ModelSerializer):
         for loc_name in self._locations:
             location, _ = Location.objects.get_or_create(name=loc_name)
             user.location.add(location)
+        user.set_password(validated_data['password'])
+        user.save()
         return user
 
 
@@ -53,9 +55,8 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         self._locations = self.initial_data.pop("location", [])
         return super().is_valid(raise_exception=raise_exception)
 
-    def save(self):
-        user = super().save()
-
+    def save(self, **kwargs):
+        user = super().save(**kwargs)
         for loc_name in self._locations:
             location, _ = Location.objects.get_or_create(name=loc_name)
             user.location.add(location)
@@ -72,6 +73,7 @@ class UserAdSerializer(serializers.ModelSerializer):
 
 """Сериализатор для вывода пользователей списком или по одному со всеми полями"""
 class UsersSerializer(serializers.ModelSerializer):
+    total_ads = serializers.SerializerMethodField()
     location = serializers.SlugRelatedField(
         many=True,
         read_only=True,
@@ -81,6 +83,9 @@ class UsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
+
+    def get_total_ads(self, user):
+        return user.ad_set.filter(is_published=True).count()
 
 
 """Сериализатор для удаления пользователя"""

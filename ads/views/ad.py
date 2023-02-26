@@ -2,15 +2,20 @@ from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import UpdateView
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from ads.models import Ad
+from ads.permissions import IsOwnerAdOrStaff
 from ads.serializers.serislizers_ad import AdSerializer, AdDetailSerializer, AdListSerializer
 
 
 """
 Стартовая страница.
 """
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def start(request):
     return JsonResponse({"status": "ok"}, status=200)
 
@@ -20,11 +25,23 @@ ViewSet для объявлений.
 """
 class AdViewSet(ModelViewSet):
     queryset = Ad.objects.order_by('-price')
+
     default_serializer = AdSerializer
     serializer_classes = {
         'retrieve': AdDetailSerializer,
         'list': AdListSerializer
     }
+
+    default_permission = [AllowAny()]
+    permission = {
+        'create': [IsAuthenticated()],
+        'update': [IsAuthenticated(), IsOwnerAdOrStaff()],
+        'partial_update': [IsAuthenticated(), IsOwnerAdOrStaff()],
+        'destroy': [IsAuthenticated(), IsOwnerAdOrStaff()]
+    }
+
+    def get_permissions(self):
+        return self.permission.get(self.action, self.default_permission)
 
     def get_serializer_class(self):
         return self.serializer_classes.get(self.action, self.default_serializer)
