@@ -8,8 +8,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from ads.models import Ad
 from ads.permissions import IsOwnerAdOrStaff
-from ads.serializers.serislizers_ad import AdSerializer, AdDetailSerializer, AdListSerializer
-
+from ads.serializers.serislizers_ad import AdSerializer, AdDetailSerializer, AdListSerializer, AdCreateSerializer
 
 """
 Стартовая страница.
@@ -29,7 +28,8 @@ class AdViewSet(ModelViewSet):
     default_serializer = AdSerializer
     serializer_classes = {
         'retrieve': AdDetailSerializer,
-        'list': AdListSerializer
+        'list': AdListSerializer,
+        'create': AdCreateSerializer
     }
 
     default_permission = [AllowAny()]
@@ -74,7 +74,7 @@ class AdViewSet(ModelViewSet):
 #
 #     def get(self, request, *args, **kwargs):
 #         super().get(request, *args, **kwargs)
-#         # ads = self.object_list.all()
+#         # ad = self.object_list.all()
 #         self.object_list = self.object_list.order_by('-price')
 #         paginator = Paginator(self.object_list, TOTAL_ON_PAGE)
 #         page = request.GET.get('page')

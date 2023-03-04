@@ -3,6 +3,7 @@ from users.models import *
 
 
 """Сериализатор для локаций"""
+
 class LocationSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -11,6 +12,7 @@ class LocationSerializer(serializers.ModelSerializer):
 
 
 """Сериализатор для создания пользователя"""
+
 class UserCreateSerializer(serializers.ModelSerializer):
     location = serializers.SlugRelatedField(
         required=False,
@@ -33,12 +35,11 @@ class UserCreateSerializer(serializers.ModelSerializer):
         for loc_name in self._locations:
             location, _ = Location.objects.get_or_create(name=loc_name)
             user.location.add(location)
-        user.set_password(validated_data['password'])
-        user.save()
         return user
 
 
 """Сериализатор для обновления пользователя"""
+
 class UserUpdateSerializer(serializers.ModelSerializer):
     location = serializers.SlugRelatedField(
         required=False,
@@ -64,6 +65,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
 
 """Сериализатор для пользователя при выводе части его полей в одном объявлении"""
+
 class UserAdSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -72,6 +74,7 @@ class UserAdSerializer(serializers.ModelSerializer):
 
 
 """Сериализатор для вывода пользователей списком или по одному со всеми полями"""
+
 class UsersSerializer(serializers.ModelSerializer):
     total_ads = serializers.SerializerMethodField()
     location = serializers.SlugRelatedField(
@@ -89,6 +92,7 @@ class UsersSerializer(serializers.ModelSerializer):
 
 
 """Сериализатор для удаления пользователя"""
+
 class UsersDestroySerializer(serializers.ModelSerializer):
 
     class Meta:

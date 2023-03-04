@@ -31,7 +31,7 @@ class UserListView(ListAPIView):
 #              'role': user.role,
 #              'age': user.age,
 #              'locations': list(map(str, user.location.all())),
-#              'total_ads': user.ads.filter(is_published=True).count()} for user in obj]
+#              'total_ads': user.ad.filter(is_published=True).count()} for user in obj]
 #         response['items'] = items_list
 #         response['total'] = self.object_list.count()
 #         response['num_pages'] = paginator.num_pages
@@ -62,7 +62,7 @@ class UserDetailView(RetrieveAPIView):
 #                              'role': user.role,
 #                              'age': user.age,
 #                              'locations': list(map(str, user.location.all())),
-#                              'total_ads': user.ads.filter(is_published=True).count()
+#                              'total_ads': user.ad.filter(is_published=True).count()
 #                              }, safe=False, json_dumps_params={"ensure_ascii": False})
 
 
@@ -140,7 +140,7 @@ class UserUpdateView(UpdateAPIView):
 #                              'role': self.object.role,
 #                              'age': self.object.age,
 #                              'locations': list(map(str, self.object.location.all())),
-#                              'total_ads': self.object.ads.filter(is_published=True).count()
+#                              'total_ads': self.object.ad.filter(is_published=True).count()
 #                              }, safe=False, json_dumps_params={"ensure_ascii": False})
 
 """Удаление указанного пользователя."""

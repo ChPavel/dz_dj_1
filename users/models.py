@@ -1,5 +1,11 @@
+from datetime import date
+
+from dateutil.relativedelta import relativedelta
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import RegexValidator
 from django.db import models
+
+from users.validators import check_birth_date
 
 
 class Location(models.Model):
@@ -30,8 +36,19 @@ class User(AbstractUser):
     # ]
     role = models.CharField(choices=UserRole.choices, default=UserRole.MEMBER, max_length=10)
     # role = models.CharField(max_length=10, choices=ROLES, default="member")
-    age = models.PositiveSmallIntegerField()
+    age = models.PositiveSmallIntegerField(blank=True, null=True, editable=False)
     location = models.ManyToManyField(Location)
+    birth_date = models.DateField(validators=[check_birth_date])
+    email = models.EmailField(verbose_name="email address", blank=True,
+                              validators=[RegexValidator(
+                                  regex="@rambler.ru",
+                                  inverse_match=True,
+                                  message="Регистрация с домена rambler запрещена!")])
+
+    def save(self, *args, **kwargs):
+        # self.set_password(self.password)
+        self.age = relativedelta(date.today(), self.birth_date).years
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Пользователь"
